@@ -1,0 +1,35 @@
+{
+  "name": "calendar-booking-ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:mock": "concurrently \"vite\" \"prism mock openapi.json\"",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@mantine/core": "^7.12.0",
+    "@mantine/dates": "^7.12.0",
+    "@mantine/form": "^7.12.0",
+    "@mantine/hooks": "^7.12.0",
+    "@mantine/notifications": "^7.12.0",
+    "@tabler/icons-react": "^3.11.0",
+    "dayjs": "^1.11.12",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.0"
+  },
+  "devDependencies": {
+    "@stoplight/prism-cli": "^5.4.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.4.41",
+    "postcss-preset-mantine": "^1.17.0",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0"
+  }
+}

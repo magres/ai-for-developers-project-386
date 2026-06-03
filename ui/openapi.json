@@ -1,0 +1,203 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Calendar Booking API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "http://localhost:3000", "description": "Development server" }
+  ],
+  "paths": {
+    "/api/event-types": {
+      "get": {
+        "operationId": "listEventTypes",
+        "summary": "List all event types",
+        "responses": {
+          "200": {
+            "description": "A list of event types",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/EventType" }
+                },
+                "example": [
+                  { "id": "et-1", "name": "30-min Chat", "description": "Quick call to discuss anything", "durationMinutes": 30 },
+                  { "id": "et-2", "name": "1-on-1 Meeting", "description": "Weekly sync-up", "durationMinutes": 60 },
+                  { "id": "et-3", "name": "Coffee Chat", "description": "Casual meetup over coffee", "durationMinutes": 15 }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/event-types/{eventTypeId}/slots": {
+      "get": {
+        "operationId": "getSlots",
+        "summary": "Get available time slots for an event type",
+        "parameters": [
+          {
+            "name": "eventTypeId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" }
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "schema": { "type": "string", "format": "date-time" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Available time slots",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/TimeSlot" }
+                },
+                "example": [
+                  { "startTime": "2026-05-31T09:00:00Z", "endTime": "2026-05-31T09:30:00Z" },
+                  { "startTime": "2026-05-31T10:00:00Z", "endTime": "2026-05-31T10:30:00Z" },
+                  { "startTime": "2026-05-31T11:00:00Z", "endTime": "2026-05-31T11:30:00Z" },
+                  { "startTime": "2026-05-31T14:00:00Z", "endTime": "2026-05-31T14:30:00Z" },
+                  { "startTime": "2026-05-31T15:00:00Z", "endTime": "2026-05-31T15:30:00Z" },
+                  { "startTime": "2026-05-31T16:00:00Z", "endTime": "2026-05-31T16:30:00Z" },
+                  { "startTime": "2026-06-01T09:00:00Z", "endTime": "2026-06-01T09:30:00Z" },
+                  { "startTime": "2026-06-01T10:00:00Z", "endTime": "2026-06-01T10:30:00Z" },
+                  { "startTime": "2026-06-01T11:00:00Z", "endTime": "2026-06-01T11:30:00Z" },
+                  { "startTime": "2026-06-01T14:00:00Z", "endTime": "2026-06-01T14:30:00Z" },
+                  { "startTime": "2026-06-01T15:00:00Z", "endTime": "2026-06-01T15:30:00Z" },
+                  { "startTime": "2026-06-01T16:00:00Z", "endTime": "2026-06-01T16:30:00Z" }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings": {
+      "post": {
+        "operationId": "createBooking",
+        "summary": "Create a booking",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BookingCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created booking",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Booking" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/event-types": {
+      "post": {
+        "operationId": "createEventType",
+        "summary": "Create a new event type (admin)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EventTypeCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created event type",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EventType" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/bookings": {
+      "get": {
+        "operationId": "listUpcomingBookings",
+        "summary": "List all upcoming bookings (admin)",
+        "responses": {
+          "200": {
+            "description": "A list of upcoming bookings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Booking" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EventType": {
+        "type": "object",
+        "required": ["id", "name", "description", "durationMinutes"],
+        "properties": {
+          "id":    { "type": "string" },
+          "name":        { "type": "string" },
+          "description": { "type": "string" },
+          "durationMinutes": { "type": "integer" }
+        }
+      },
+      "Booking": {
+        "type": "object",
+        "required": ["id", "eventTypeId", "startTime", "endTime"],
+        "properties": {
+          "id": { "type": "string" },
+          "eventTypeId": { "type": "string" },
+          "startTime": { "type": "string", "format": "date-time" },
+          "endTime":   { "type": "string", "format": "date-time" }
+        }
+      },
+      "TimeSlot": {
+        "type": "object",
+        "required": ["startTime", "endTime"],
+        "properties": {
+          "startTime": { "type": "string", "format": "date-time" },
+          "endTime":   { "type": "string", "format": "date-time" }
+        }
+      },
+      "EventTypeCreate": {
+        "type": "object",
+        "required": ["name", "description", "durationMinutes"],
+        "properties": {
+          "name":        { "type": "string" },
+          "description": { "type": "string" },
+          "durationMinutes": { "type": "integer" }
+        }
+      },
+      "BookingCreate": {
+        "type": "object",
+        "required": ["eventTypeId", "startTime"],
+        "properties": {
+          "eventTypeId": { "type": "string" },
+          "startTime":   { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}
