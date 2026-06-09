@@ -1,0 +1,14 @@
+{
+  "name": "calendar-booking",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev:full",
+    "dev:full": "concurrently -k -n front,back \"npm --prefix ui run dev\" \"python scripts/start-backend.py\"",
+    "dev:mock": "concurrently -k -n front,mock \"npm --prefix ui run dev\" \"cd ui && npx prism mock ../specs/openapi.json --port 8000\"",
+    "dev:front": "npm --prefix ui run dev",
+    "dev:back": "python scripts/start-backend.py"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
