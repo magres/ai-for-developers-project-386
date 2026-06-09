@@ -15,6 +15,7 @@ router = APIRouter(prefix="/api/admin", tags=["Admin"])
     "/event-types",
     response_model=EventTypeResponse,
     status_code=status.HTTP_201_CREATED,
+    response_model_by_alias=True,
 )
 async def create_event_type(
     body: EventTypeCreate,
@@ -27,7 +28,7 @@ async def create_event_type(
     return event_type
 
 
-@router.get("/bookings", response_model=list[BookingResponse])
+@router.get("/bookings", response_model=list[BookingResponse], response_model_by_alias=True)
 async def list_upcoming_bookings(db: AsyncSession = Depends(get_db)):
     now = datetime.now(timezone.utc).replace(tzinfo=None)
     result = await db.execute(

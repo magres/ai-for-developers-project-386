@@ -1,9 +1,22 @@
 from datetime import datetime
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 
 
-class EventTypeCreate(BaseModel):
+def to_camel(s: str) -> str:
+    first, *rest = s.split("_")
+    return first + "".join(w.capitalize() for w in rest)
+
+
+class CamelBase(BaseModel):
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+        from_attributes=True,
+    )
+
+
+class EventTypeCreate(CamelBase):
     name: str
     description: str
     duration_minutes: int
@@ -16,25 +29,25 @@ class EventTypeCreate(BaseModel):
         return v
 
 
-class EventTypeResponse(BaseModel):
+class EventTypeResponse(CamelBase):
     id: str
     name: str
     description: str
     duration_minutes: int
 
 
-class BookingCreate(BaseModel):
+class BookingCreate(CamelBase):
     event_type_id: str
     start_time: datetime
 
 
-class BookingResponse(BaseModel):
+class BookingResponse(CamelBase):
     id: str
     event_type_id: str
     start_time: datetime
     end_time: datetime
 
 
-class TimeSlot(BaseModel):
+class TimeSlot(CamelBase):
     start_time: datetime
     end_time: datetime

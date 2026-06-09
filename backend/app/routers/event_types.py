@@ -9,7 +9,7 @@ from app.schemas import EventTypeResponse
 router = APIRouter(prefix="/api/event-types", tags=["Guest: Event Types"])
 
 
-@router.get("", response_model=list[EventTypeResponse])
+@router.get("", response_model=list[EventTypeResponse], response_model_by_alias=True)
 async def list_event_types(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(EventType).order_by(EventType.name))
     return result.scalars().all()

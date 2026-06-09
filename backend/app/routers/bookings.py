@@ -15,7 +15,7 @@ def _naive(dt: datetime) -> datetime:
     return dt.replace(tzinfo=None)
 
 
-@router.post("", response_model=BookingResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=BookingResponse, status_code=status.HTTP_201_CREATED, response_model_by_alias=True)
 async def create_booking(body: BookingCreate, db: AsyncSession = Depends(get_db)):
     event_type = await db.get(EventType, body.event_type_id)
     if event_type is None:
