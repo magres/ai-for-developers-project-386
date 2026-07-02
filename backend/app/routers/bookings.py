@@ -11,8 +11,10 @@ from app.schemas import BookingCreate, BookingResponse
 router = APIRouter(prefix="/api/bookings", tags=["Guest: Bookings"])
 
 
-def _naive(dt: datetime) -> datetime:
-    return dt.replace(tzinfo=None)
+def _ensure_utc(dt: datetime) -> datetime:
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
 
 
 @router.post("", response_model=BookingResponse, status_code=status.HTTP_201_CREATED, response_model_by_alias=True)
@@ -21,10 +23,11 @@ async def create_booking(body: BookingCreate, db: AsyncSession = Depends(get_db)
     if event_type is None:
         raise HTTPException(status_code=404, detail="Event type not found")
 
-    start_time = _naive(body.start_time)
+    start_time = _ensure_utc(body.start_time)
     end_time = start_time + timedelta(minutes=event_type.duration_minutes)
 
-    if end_time <= _naive(datetime.now(timezone.utc)):
+    now = _ensure_utc(datetime.now(timezone.utc))
+    if end_time <= now:
         raise HTTPException(
             status_code=400,
             detail="Cannot book a slot in the past",

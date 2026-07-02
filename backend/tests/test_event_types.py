@@ -17,7 +17,7 @@ async def test_create_event_type(client):
     data = resp.json()
     assert data["name"] == "30-min Chat"
     assert data["description"] == "Quick call"
-    assert data["duration_minutes"] == 30
+    assert data["durationMinutes"] == 30
     assert "id" in data
 
 

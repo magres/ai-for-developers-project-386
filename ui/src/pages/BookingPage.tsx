@@ -18,11 +18,12 @@ export default function BookingPage() {
 
     const dateFrom = dayjs().startOf('day').toISOString();
     const dateTo = dayjs().add(14, 'day').endOf('day').toISOString();
+    const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     setLoading(true);
     Promise.all([
       fetchEventTypes().then((types) => types.find((t) => t.id === eventTypeId) || null),
-      fetchSlots(eventTypeId, dateFrom, dateTo),
+      fetchSlots(eventTypeId, dateFrom, dateTo, userTz),
     ])
       .then(([et, slotsData]) => {
         setEventType(et);

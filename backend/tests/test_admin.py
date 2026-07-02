@@ -19,7 +19,7 @@ async def test_admin_bookings_shows_upcoming(client):
     et = et_resp.json()
 
     future = (datetime.now(timezone.utc) + timedelta(days=1)).replace(
-        hour=10, minute=0, second=0, microsecond=0
+        hour=10, minute=0, second=0, microsecond=0, tzinfo=timezone.utc
     )
 
     await client.post(
@@ -31,4 +31,4 @@ async def test_admin_bookings_shows_upcoming(client):
     assert resp.status_code == 200
     data = resp.json()
     assert len(data) == 1
-    assert data[0]["event_type_id"] == et["id"]
+    assert data[0]["eventTypeId"] == et["id"]

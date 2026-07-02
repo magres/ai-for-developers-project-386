@@ -14,6 +14,7 @@ router = APIRouter(tags=["Guest: Slots"])
 @router.get("/api/event-types/{event_type_id}/slots", response_model=list[TimeSlot], response_model_by_alias=True)
 async def get_slots(
     event_type_id: str,
+    tz_name: str = Query(..., alias="timezone"),
     date_from: datetime | None = Query(None, alias="dateFrom"),
     date_to: datetime | None = Query(None, alias="dateTo"),
     db: AsyncSession = Depends(get_db),
@@ -25,8 +26,10 @@ async def get_slots(
     now = datetime.now(timezone.utc)
     today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
-    date_from = (date_from or today_start).replace(tzinfo=None)
-    date_to = (date_to or (date_from + timedelta(days=14))).replace(tzinfo=None)
+    if date_from is None:
+        date_from = today_start
+    if date_to is None:
+        date_to = date_from + timedelta(days=14)
 
     if date_from >= date_to:
         return []
@@ -35,5 +38,7 @@ async def get_slots(
         duration_minutes=event_type.duration_minutes,
         date_from=date_from,
         date_to=date_to,
+        tz_name=tz_name,
         db=db,
+        now=now,
     )

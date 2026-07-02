@@ -12,7 +12,7 @@ async def test_create_booking(client):
     et = et_resp.json()
 
     future = (datetime.now(timezone.utc) + timedelta(days=1)).replace(
-        hour=10, minute=0, second=0, microsecond=0
+        hour=10, minute=0, second=0, microsecond=0, tzinfo=timezone.utc
     )
 
     resp = await client.post(
@@ -21,9 +21,9 @@ async def test_create_booking(client):
     )
     assert resp.status_code == 201
     data = resp.json()
-    assert data["event_type_id"] == et["id"]
+    assert data["eventTypeId"] == et["id"]
     assert "id" in data
-    assert "end_time" in data
+    assert "endTime" in data
 
 
 @pytest.mark.asyncio
@@ -45,7 +45,7 @@ async def test_double_booking_conflict(client):
     et = et_resp.json()
 
     future = (datetime.now(timezone.utc) + timedelta(days=1)).replace(
-        hour=10, minute=0, second=0, microsecond=0
+        hour=10, minute=0, second=0, microsecond=0, tzinfo=timezone.utc
     )
     payload = {"event_type_id": et["id"], "start_time": future.isoformat()}
 
@@ -68,7 +68,7 @@ async def test_double_booking_different_event_types(client):
     )).json()
 
     future = (datetime.now(timezone.utc) + timedelta(days=1)).replace(
-        hour=10, minute=0, second=0, microsecond=0
+        hour=10, minute=0, second=0, microsecond=0, tzinfo=timezone.utc
     )
 
     resp1 = await client.post(

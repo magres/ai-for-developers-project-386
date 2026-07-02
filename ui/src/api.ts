@@ -19,10 +19,11 @@ export function fetchEventTypes(): Promise<EventType[]> {
   return request<EventType[]>('/event-types');
 }
 
-export function fetchSlots(eventTypeId: string, dateFrom?: string, dateTo?: string): Promise<TimeSlot[]> {
+export function fetchSlots(eventTypeId: string, dateFrom?: string, dateTo?: string, timezone?: string): Promise<TimeSlot[]> {
   const params = new URLSearchParams();
   if (dateFrom) params.set('dateFrom', dateFrom);
   if (dateTo) params.set('dateTo', dateTo);
+  if (timezone) params.set('timezone', timezone);
   const qs = params.toString();
   return request<TimeSlot[]>(`/event-types/${eventTypeId}/slots${qs ? `?${qs}` : ''}`);
 }

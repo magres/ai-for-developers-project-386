@@ -30,7 +30,7 @@ async def create_event_type(
 
 @router.get("/bookings", response_model=list[BookingResponse], response_model_by_alias=True)
 async def list_upcoming_bookings(db: AsyncSession = Depends(get_db)):
-    now = datetime.now(timezone.utc).replace(tzinfo=None)
+    now = datetime.now(timezone.utc)
     result = await db.execute(
         select(Booking)
         .where(Booking.start_time >= now)

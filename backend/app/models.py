@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -27,7 +27,7 @@ class Booking(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
     event_type_id: Mapped[str] = mapped_column(ForeignKey("event_types.id"))
-    start_time: Mapped[datetime] = mapped_column()
-    end_time: Mapped[datetime] = mapped_column()
+    start_time: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    end_time: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
     event_type: Mapped["EventType"] = relationship(back_populates="bookings")
